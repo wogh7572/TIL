@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Login Page</title>
+</head>
+<body>
+  <!-- GET 방식 요청을 보내는 폼 -->
+  <form id="getForm" action="/login" method="GET">
+    <input type="text" id="userIdGet" name="userId" placeholder="Enter ID">
+    <input type="password" id="userPasswordGet" name="userPassword" placeholder="Enter Password">
+    <button type="submit">Submit GET</button>
+  </form>
+
+  <!-- POST 방식 요청을 보내는 폼 -->
+  <form id="postForm" action="/login" method="POST">
+    <input type="text" id="userIdPost" name="userId" placeholder="Enter ID">
+    <input type="password" id="userPasswordPost" name="userPassword" placeholder="Enter Password">
+    <button type="button" onclick="sendData('POST')">Submit POST</button>
+  </form>
+
+  <p id="displayInfo">ID and Password will be displayed here</p>
+
+  <!-- 이전의 나머지 HTML 코드는 유지합니다. -->
+
+<script>
+    async function sendData(method) {
+      const userId = document.getElementById(`userId${method === 'POST' ? 'Post' : 'Get'}`).value;
+      const userPassword = document.getElementById(`userPassword${method === 'POST' ? 'Post' : 'Get'}`).value;
+  
+      const data = { userId, userPassword };
+  
+      try {
+        let url = '/login';
+  
+        if (method === 'GET') {
+          url += `?userId=${userId}&userPassword=${userPassword}`;
+        }
+  
+        const response = await fetch(url, {
+          method: method,
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          // POST 요청 시 body에 데이터 전달
+          body: method === 'POST' ? JSON.stringify(data) : null
+        });
+  
+        const result = await response.json();
+        console.log(result);
+  
+        const display = document.getElementById('displayInfo');
+        display.textContent = `ID: ${result.userId}, Password: ${result.userPassword}`;
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    }
+  </script>
+  
+</body>
+</html>
